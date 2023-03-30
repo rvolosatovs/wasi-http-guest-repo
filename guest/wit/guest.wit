@@ -1,0 +1,3 @@
+default world guest {
+    export http: http.incoming-handler
+}
