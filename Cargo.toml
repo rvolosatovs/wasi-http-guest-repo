@@ -1,0 +1,22 @@
+[package]
+name = "http-wit-repro"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+guest = { workspace = true }
+wasi_snapshot_preview1 = { workspace = true }
+wit-component = { workspace = true }
+
+[workspace.dependencies]
+guest = { path = "./guest", artifact = "cdylib", target = "wasm32-wasi" }
+wasi_snapshot_preview1 = { git = "https://github.com/bytecodealliance/preview2-prototyping", rev = "47b30fdad11553841bbee4c5632101bbd645854b", features = ["reactor"], target = "wasm32-unknown-unknown", artifact = "cdylib" }
+wit-bindgen = "0.4.0"
+wit-component = "0.7.4"
+
+# From https://github.com/bytecodealliance/preview2-prototyping/blob/24fa023d1848ca3a24b35ed80ff1514ea54dd219/Cargo.toml#L52-L64
+[profile.dev.package.wasi_snapshot_preview1]
+incremental = false
+opt-level = 's'
+debug-assertions = false
+overflow-checks = false
