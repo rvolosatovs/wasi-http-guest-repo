@@ -7,23 +7,21 @@ use wit_component::ComponentEncoder;
 fn main() {
     let mut argv = args();
 
-    let module = match (argv.next(), argv.next(), argv.next()) {
-        (Some(exe), Some(module), None) => Some(fs::read(module).expect("failed to read module")),
-        (Some(exe), None, None) => None,
+    let adapter = match (argv.next(), argv.next(), argv.next()) {
+        (Some(_), Some(adapter), None) => Some(fs::read(adapter).expect("failed to read adapter")),
+        (Some(_), None, None) => None,
         _ => panic!("argv[0] not set"),
     };
 
     let buf = ComponentEncoder::default()
         .validate(true)
-        .module(
-            module
-                .as_deref()
-                .unwrap_or(include_bytes!(env!("CARGO_CDYLIB_FILE_GUEST"))),
-        )
+        .module(include_bytes!(env!("CARGO_CDYLIB_FILE_GUEST")))
         .expect("failed to set core component module")
         .adapter(
             "wasi_snapshot_preview1",
-            include_bytes!(env!("CARGO_CDYLIB_FILE_WASI_SNAPSHOT_PREVIEW1")),
+            adapter.as_deref().unwrap_or(include_bytes!(env!(
+                "CARGO_CDYLIB_FILE_WASI_SNAPSHOT_PREVIEW1"
+            ))),
         )
         .expect("failed to add WASI adapter")
         .encode()
